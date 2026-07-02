@@ -199,13 +199,27 @@
             background: rgba(0, 0, 0, 0.4);
             padding: clamp(6px, 0.8vw, 12px) clamp(14px, 2vw, 28px);
             border-radius: 60px;
-            font-size: clamp(0.75rem, 1vw, 1rem);
             border: 1px solid rgba(255, 215, 0, 0.15);
             color: var(--text-muted);
             white-space: nowrap;
             backdrop-filter: blur(4px);
             font-weight: 500;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        .date-box .hijri-date {
+            color: var(--gold-light);
+            font-weight: 700;
+            font-size: clamp(0.8rem, 1.1vw, 1.1rem);
+        }
+
+        .date-box .gregorian-date {
+            font-size: clamp(0.7rem, 0.9vw, 0.9rem);
+            opacity: 0.8;
         }
 
         .nav-tabs {
@@ -812,7 +826,10 @@
                 <div class="subtitle"><span>الفقه الميسر</span></div>
             </div>
             <div class="header-left">
-                <div class="date-box" id="dateDisplay">📅</div>
+                <div class="date-box">
+                    <span class="hijri-date" id="hijriDate">🕌</span>
+                    <span class="gregorian-date" id="gregorianDate">📅</span>
+                </div>
             </div>
         </header>
 
@@ -1055,8 +1072,18 @@
         modalClose.addEventListener('click', closeModal);
 
         // ============================================================
-        //  التاريخ
+        //  التاريخ (ميلادي + هجري)
         // ============================================================
+
+        function getHijriDate() {
+            const formatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            const date = new Date();
+            return formatter.format(date);
+        }
 
         function updateDate() {
             const now = new Date();
@@ -1066,8 +1093,11 @@
                 month: 'long',
                 day: 'numeric'
             };
-            const dateStr = now.toLocaleDateString('ar-EG', options);
-            document.getElementById('dateDisplay').textContent = `📅 ${dateStr}`;
+            const gregorianStr = now.toLocaleDateString('ar-EG', options);
+            const hijriStr = getHijriDate();
+
+            document.getElementById('hijriDate').textContent = `🕌 ${hijriStr}`;
+            document.getElementById('gregorianDate').textContent = `📅 ${gregorianStr}`;
         }
 
         // ============================================================
